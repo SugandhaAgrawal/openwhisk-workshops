@@ -1,6 +1,6 @@
 # ibm cloud functions web ui
 
-This exercise will introduce the [IBM Cloud Functions Web UI](https://console.bluemix.net/openwhisk/). This application helps to manage your IBM Cloud Functions applications from a web browser, rather than using the command-line.
+This exercise will introduce the [IBM Cloud Functions Web UI](https://cloud.ibm.com/openwhisk/). This application helps to manage your IBM Cloud Functions applications from a web browser, rather than using the command-line.
 
 *Once you have completed this exercise, you will haveâ€¦*
 
@@ -36,11 +36,11 @@ In this exercise, we'll show you the different features of the IBM Cloud Web UIâ
 
 ### Navigating To The IBM Cloud Functions Homepage
 
-1. Open the [IBM Cloud homepage](https://console.bluemix.net).
+1. Open the [IBM Cloud homepage](https://cloud.ibm.com).
 
 2. Click to show the menu on the left-hand side.
 
-3. Click "Functions" in the list to open the [IBM Cloud Functions homepage](https://console.bluemix.net/openwhisk/).
+3. Click "Functions" in the list to open the [IBM Cloud Functions homepage](https://cloud.ibm.com/openwhisk/).
 
    ![](images/homepage.gif)
 
@@ -48,7 +48,7 @@ In this exercise, we'll show you the different features of the IBM Cloud Web UIâ
 
 1. Select "Actions" from the left-hand menu panel on the homepage.
 
-[This page](https://console.bluemix.net/openwhisk/actions) is the management page for actions. It shows actions within the chosen region, org and space.
+[This page](https://cloud.ibm.com/openwhisk/actions) is the management page for actions. It shows actions within the chosen region, org and space.
 
 ![action details page](images/action-overview.png)
 
@@ -81,7 +81,7 @@ Using the menu on the left-hand side, different properties for the action can be
 
 #### Creating Actions
 
-From the [action overview page](https://console.bluemix.net/openwhisk/actions), new actions can be created by providing the source code through the browser-based editor.
+From the [action overview page](https://cloud.ibm.com/openwhisk/actions), new actions can be created by providing the source code through the browser-based editor.
 
 1. Select the "Create" button from the page.
 2. Choose "Create Action" from the list.
@@ -95,7 +95,7 @@ From the [action overview page](https://console.bluemix.net/openwhisk/actions), 
 
 1. Select "Triggers" from the left-hand menu panel on the homepage.
 
-[This page](https://console.bluemix.net/openwhisk/triggers) is the management page for triggers. It shows triggers within the chosen region, org and space.
+[This page](https://cloud.ibm.com/openwhisk/triggers) is the management page for triggers. It shows triggers within the chosen region, org and space.
 
 ![Triggers Overview Page](images/triggers-overview.png)
 
@@ -115,7 +115,7 @@ Using the menu on the left-hand side, different properties for the trigger can b
 
 #### Creating Triggers
 
-From the [trigger overview page](https://console.bluemix.net/openwhisk/triggers), new triggers can be created.
+From the [trigger overview page](https://cloud.ibm.com/openwhisk/triggers), new triggers can be created.
 
 1. Select the "Create" button from the page.
 2. Choose "Create Trigger" from the list.
@@ -127,7 +127,7 @@ From the [trigger overview page](https://console.bluemix.net/openwhisk/triggers)
 
 ### Monitoring
 
-IBM Cloud Functions Web UI comes with a [comprehensive visualisation dashboard](https://console.bluemix.net/openwhisk/dashboard) for monitoring serverless applications.
+IBM Cloud Functions Web UI comes with a [comprehensive visualisation dashboard](https://cloud.ibm.com/openwhisk/dashboard) for monitoring serverless applications.
 
 This dashboard shows activations within a region, org and space. Developers can see activation results, invocation times and logging output through the dashboard. Activations displayed can be filtered by name or time window.
 
@@ -156,7 +156,7 @@ Using the menu on the left-hand side, different properties for the API can be ac
 
 #### Creating APIs
 
-1. Click the "Create API" from the [APIs homepage](https://console.bluemix.net/openwhisk/apimanagement).
+1. Click the "Create API" from the [APIs homepage](https://cloud.ibm.com/openwhisk/apimanagement).
 
 In this page, API details can either be filled out manually or imported from an existing Swagger file.
 

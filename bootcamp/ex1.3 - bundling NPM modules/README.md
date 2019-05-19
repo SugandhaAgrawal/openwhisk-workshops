@@ -44,7 +44,7 @@ Our archive will contain two files, the [package descriptor](https://docs.npmjs.
 
 ```javascript
 exports.main = function (params) {
-  return {result: "Hello World"};
+  return {result: "Hello World from zip"};
 };
 ```
 
@@ -65,7 +65,7 @@ $ ibmcloud wsk action create hello_world --kind nodejs:default action.zip
 ```
 $ ibmcloud wsk action invoke hello_world --result
 {
-    "result": "Hello world"
+    "result": "Hello World from zip"
 }
 ```
 
@@ -89,7 +89,7 @@ Let's build a sample action which uses an external NPM dependency, not available
 }
 ```
 
-2. Create an `index.js  `with the following code in:
+2. Create an `index.js` with the following code in:
 
 ```javascript
 function myAction(args) {

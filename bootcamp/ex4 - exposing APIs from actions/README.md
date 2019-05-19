@@ -57,46 +57,46 @@ Using the API Gateway is an extension to web actions that allows you to build en
 
 ### Web Actions
 
-Let's turn the `hello` action into a web action. Once it has been converted, we can call this action using a normal HTTP request.
+Let's turn the `hello-js` action into a web action. Once it has been converted, we can call this action using a normal HTTP request.
 
 1. Update the action to set the `—web` flag to `true`.
 
 ```
-$ ibmcloud wsk action update hello --web true
-ok: updated action hello
+$ ibmcloud fn action update hello-js --web true
+ok: updated action hello-js
 ```
 
 2. Retrieve the web action URL exposed by the platform for this action.
 
 ```
-$ ibmcloud wsk action get hello --url
-ok: got action hello
-https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/hello
+$ ibmcloud fn action get hello-js --url
+ok: got action hello-js
+https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/hello-js
 ```
 
 3. Invoke the web action URL with the JSON extension, passing in query parameters for `name` and `place`.
 
 ```
-$ curl "https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/hello.json?name=Bernie"
+$ curl "https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/hello-js.json?name=Su"
 {
-  "message": "Hello Bernie from Vermont!"
+  "payload": "Hello, Su from Vermont"
 }
 ```
 
 4. Disable web action support.
 
 ```
-$ ibmcloud wsk action update hello --web false
+$ ibmcloud fn action update hello --web false
 ok: updated action hello
 ```
 
 5. Verify the action is not externally accessible with authentication.
 
 ```
-$ curl "https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/hello.json?name=Bernie"
+$ curl "https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/hello-js.json?name=Su"
 {
-  "error": "The requested resource does not exist.",
-  "code": 4452991
+  "code": "e6bead05d9f7f1f1fb41341d1b700f38",
+  "error": "The requested resource does not exist."
 }
 ```
 
@@ -137,7 +137,7 @@ Web actions have a [lot more features](https://github.com/apache/incubator-openw
 
 #### Example - HTTP Redirect
 
-1. Create a new web action from the following source code.
+1. **Create** a new web action from the following source code.
 
 ##### Node.js example
 
@@ -151,7 +151,7 @@ function main() {
 ```
 
 ```
-$ ibmcloud wsk action create redirect action.js --web true
+$ ibmcloud fn action create redirect action.js --web true
 ok: created action redirect
 ```
 
@@ -167,37 +167,39 @@ func main(args: [String:Any]) -> [String:Any] {
 ```
 
 ```
-$ ibmcloud wsk action create redirect action.swift --web true
+$ ibmcloud fn action create redirect action.swift --web true
 ok: created action redirect
 ```
 
 2. Retrieve URL for new web action
 
 ```
-$ ibmcloud wsk action get redirect --url
+$ ibmcloud fn action get redirect --url
 ok: got action redirect
-https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/redirect
+https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/redirect
 ```
 
 3. Check HTTP response is HTTP redirect.
 
 ```
-$ curl -v https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/redirect
-< HTTP/1.1 302 Found
-< X-Backside-Transport: OK OK
-< Connection: Keep-Alive
-< Transfer-Encoding: chunked
-< Server: nginx/1.11.13
-< Date: Fri, 23 Feb 2018 11:23:24 GMT
-< Access-Control-Allow-Origin: *
-< Access-Control-Allow-Methods: OPTIONS, GET, DELETE, POST, PUT, HEAD, PATCH
-< Access-Control-Allow-Headers: Authorization, Content-Type
-< location: http://openwhisk.org 
+$ curl -v https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/redirect
+* Connection state changed (MAX_CONCURRENT_STREAMS updated)!
+< HTTP/2 302
+< date: Sun, 19 May 2019 21:58:26 GMT
+< content-length: 0
+< set-cookie: __cfduid=dcbefa3994c3946929778c5ecff73b6211558303105; expires=Mon, 18-May-20 21:58:25 GMT; path=/; domain=.functions.cloud.ibm.com; HttpOnly
+< x-request-id: f63bdea23273429ea68751b644e169e1
+< access-control-allow-origin: *
+< access-control-allow-methods: OPTIONS, GET, DELETE, POST, PUT, HEAD, PATCH
+< access-control-allow-headers: Authorization, Origin, X-Requested-With, Content-Type, Accept, User-Agent
+< x-openwhisk-activation-id: 8c70d9d77a9a4758b0d9d77a9a2758d8
+< location: http://openwhisk.org
+< ibm_cloud_functions: OpenWhisk
 ```
 
 #### Example - HTML Response
 
-1. Create a new web action from the following source code.
+1. **Create** a new web action from the following source code.
 
 ##### Node.js example
 
@@ -211,7 +213,7 @@ function main() {
 ```
 
 ```
-$ ibmcloud wsk action create html action.js --web true
+$ ibmcloud fn action create html action.js --web true
 ok: created action html
 ```
 
@@ -229,22 +231,22 @@ func main(args: [String:Any]) -> [String:Any] {
 ```
 
 ```
-$ ibmcloud wsk action create html action.swift --web true
+$ ibmcloud fn action create html action.swift --web true
 ok: created action html
 ```
 
 1. Retrieve URL for new web action
 
 ```swift
-$ ibmcloud wsk action get html --url
+$ ibmcloud fn action get html --url
 ok: got action html
-https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/html
+https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/html
 ```
 
 3. Check HTTP response is HTML.
 
 ```
-$ curl https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/html
+$ curl https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/html
 <html><body>Hello World!</body></html>
 ```
 
@@ -253,8 +255,8 @@ $ curl https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/h
 1. Download PNG image and generate base64 string.
 
 ```
-$ wget https://static01.nytimes.com/newsgraphics/2015/01/30/candidate-tracker/assets/images/sanders-square-silo-150.png
-$ base64 sanders-square-silo-150.png
+$ wget https://cdn.pixabay.com/photo/2016/10/09/00/18/star-wars-1724901_1280.jpg
+$ base64 star-wars-1724901_1280.jpg
 ```
 
 2. Create a new web action from the following source code.
@@ -271,7 +273,7 @@ function main() {
 ```
 
 ```
-$ ibmcloud wsk action create image action.js --web true
+$ ibmcloud fn action create image action.js --web true
 ok: created action image
 ```
 
@@ -290,21 +292,21 @@ func main(args: [String:Any]) -> [String:Any] {
 ```
 
 ```
-$ ibmcloud wsk action create image action.swift --web true
+$ ibmcloud fn action create image action.swift --web true
 ok: created action image
 ```
 
 3. Retrieve URL for new web action.
 
 ```
-$ ibmcloud wsk action get image --url
+$ ibmcloud fn action get image --url
 ok: got action image
-https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/image
+https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/image
 ```
 
 4. Open URL in web browser to check the following image is returned.
 
-![Feel the Bern!](https://static01.nytimes.com/newsgraphics/2015/01/30/candidate-tracker/assets/images/sanders-square-silo-150.png)
+![Darth Vader!](https://cdn.pixabay.com/photo/2016/10/09/00/18/star-wars-1724901_1280.jpg)
 
 #### Example - Manual JSON response
 
@@ -323,7 +325,7 @@ function main(params) {
 ```
 
 ```
-$ ibmcloud wsk action create manual action.js --web true
+$ ibmcloud fn action create manual action.js --web true
 ok: created action manual
 ```
 
@@ -347,7 +349,7 @@ ok: created action manual
 2. Retrieve URL for new web action
 
 ```
-$ ibmcloud wsk action get manual --url
+$ ibmcloud fn action get manual --url
 ok: got action manual
 https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/manual
 ```
@@ -355,42 +357,46 @@ https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/manual
 3. Check HTTP response is JSON.
 
 ```
-$ curl "https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/manual?hello=world"
+$ curl "https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/manual?hello=world"
 {
-  "__ow_method": "get",
   "__ow_headers": {
     "accept": "*/*",
+    "accept-encoding": "gzip",
+    "cf-ipcountry": "DE",
+    "cf-ray": "4d9970a5cb1a972a-FRA",
+    "cf-visitor": "{\"scheme\":\"https\"}",
+    "host": "us-south.functions.cloud.ibm.com",
     "user-agent": "curl/7.54.0",
-    "x-client-ip": "92.11.100.114",
-    "x-forwarded-proto": "https",
-    "host": "openwhisk.ng.bluemix.net:443",
-    "cache-control": "no-transform",
-    "via": "1.1 DwAAAD0oDAI-",
-    "x-global-transaction-id": "2654586489",
-    "x-forwarded-for": "92.11.100.114"
+    "x-forwarded-host": "us-south.functions.cloud.ibm.com",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
   },
+  "__ow_method": "get",
   "__ow_path": "",
   "hello": "world"
+}
 ```
 
 4. Use other HTTP methods or URI paths to show the parameters change.
 
 ```
-$ curl -XPOST "https://openwhisk.ng.bluemix.net/api/v1/web/user%40host.com_dev/default/manual/subpath"
+$ curl -XPOST "https://us-south.functions.cloud.ibm.com/api/v1/web/<namespace>/default/manual/subpath"
 {
-  "__ow_method": "post",
   "__ow_headers": {
     "accept": "*/*",
+    "accept-encoding": "gzip",
+    "cf-ipcountry": "DE",
+    "cf-ray": "4d997320e83d644f-FRA",
+    "cf-visitor": "{\"scheme\":\"https\"}",
+    "host": "us-south.functions.cloud.ibm.com",
     "user-agent": "curl/7.54.0",
-    "x-client-ip": "92.11.100.114",
-    "x-forwarded-proto": "https",
-    "host": "openwhisk.ng.bluemix.net:443",
-    "via": "1.1 AgAAAB+7NgA-",
-    "x-global-transaction-id": "2897764571",
-    "x-forwarded-for": "92.11.100.114"
+    "x-forwarded-host": "us-south.functions.cloud.ibm.com",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
   },
-  "__ow_path": "/subpath",
-  "hello": "world"
+  "__ow_method": "post",
+  "__ow_path": "/subpath"
+}
 ```
 
 🎉🎉🎉 **OpenWhisk Web Actions are an awesome feature. Exposing public APIs from actions is minimal effort. Let's finish off this section by looking at an additional approach, using an API Gateway.** 🎉🎉🎉
@@ -405,27 +411,27 @@ The API Gateway acts as a proxy to [Web Actions](https://github.com/apache/incub
 
 Let's look a short example of using the API Gateway service…
 
-1. Ensure the `hello` action is enabled as a web action.
+1. Ensure the `hello-js` action is enabled as a web action.
 
 ```
-$ ibmcloud wsk action update hello --web true
-ok: updated action hello
+$ ibmcloud fn action update hello-js --web true
+ok: updated action hello-js
 ```
 
 2. Create a new API Gateway endpoint for the web action.
 
 ```
-$ ibmcloud wsk api create /api/hello get hello --response-type json --apiname "hello-world"
-ok: created API /api/hello GET for action /_/hello
+$ ibmcloud fn api create /api/hello get hello-js --response-type json --apiname "hello-world"
+ok: created API /api/hello GET for action /_/hello-js
 https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello
 ```
 
 3. Check HTTP API returns JSON response.
 
 ```
-$ curl "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello?name=Bernie"
+$ curl "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello?name=Luke"
 {
-  "payload": "Hello, Bernie from Vermont"
+  "payload": "Hello, Luke from Vermont"
 }
 ```
 
@@ -439,22 +445,23 @@ $ curl -XPOST "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UU
 5. Enable other endpoints and verbs.
 
 ```
-$ ibmcloud wsk api create /api/hello/world get hello --response-type json --apiname "hello-world"
-ok: created API /api/hello/world GET for action /_/hello
+$ ibmcloud fn api create /api/hello/world get hello-js --response-type json --apiname "hello-world"
+ok: created API /api/hello/world GET for action /_/hello-js
 https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello/world
-$ curl "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello/world?name=Bernie"
+
+$ curl "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello/world?name=Yoda"
 {
-  "payload": "Hello, Bernie from Vermont"
+  "payload": "Hello, Yoda from Vermont"
 }
 ```
 
 ```
-$ ibmcloud wsk api create /api/hello post hello --response-type json --apiname "hello-world"
+$ ibmcloud fn api create /api/hello post hello-js --response-type json --apiname "hello-world"
 ok: created API /api/hello POST for action /_/hello
 https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello
-$ curl -XPOST "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello?name=Bernie"
+$ curl -XPOST "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello?name=Yoda"
 {
-  "payload": "Hello, Bernie from Vermont"
+  "payload": "Hello, Yoda from Vermont"
 }
 ```
 
@@ -463,26 +470,26 @@ $ curl -XPOST "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UU
 1. List all the exposed API endpoints.
 
 ```
-$ ibmcloud wsk api list
+$ ibmcloud fn api list
 ```
 
 2. Export the API definitions to a Swagger file.
 
 ```
-$ ibmcloud wsk api get / > swagger.json
+$ ibmcloud fn api get / > swagger.json
 ```
 
 3. Delete all the API definitions.
 
 ```
-$ ibmcloud wsk api delete /
+$ ibmcloud fn api delete /
 ok: deleted API /
 ```
 
 4. Check there are no more APIs defined.
 
 ```
-$ ibmcloud wsk api list
+$ ibmcloud fn api list
 ok: APIs
 Action                            Verb             API Name  URL
 ```
@@ -490,13 +497,13 @@ Action                            Verb             API Name  URL
 5. Restore from Swagger file.
 
 ```
-$ ibmcloud wsk api create --config-file swagger.json
+$ ibmcloud fn api create --config-file swagger.json
 ```
 
 6. Confirm the APIs have been re-created.
 
 ```
-$ ibmcloud wsk api list
+$ ibmcloud fn api list
 ```
 
 ### API Management Features
@@ -505,8 +512,8 @@ IBM Cloud Functions supports using the IBM API Management service to support mor
 
 Let's look at setting up some of these features for the API endpoints we have already defined…
 
-1. Open the [IBM Cloud Functions](https://console.bluemix.net/openwhisk/) homepage.
-2. Navigate to the [APIs](https://console.bluemix.net/openwhisk/apimanagement) page.
+1. Open the [IBM Cloud Functions](https://cloud.ibm.com/openwhisk/) homepage.
+2. Navigate to the [APIs](https://cloud.ibm.com/openwhisk/apimanagement) page.
 3. Click the "hello world" API in the table.
 4. Select the "Definition" link from the API details menu.
 
@@ -537,7 +544,7 @@ If the key has been created correctly the table should now display the newly ena
 Let's try out calling one of our API endpoints without an API key.
 
 ```
-$ ibmcloud wsk api list
+$ ibmcloud fn api list
 ok: APIs
 Action                                Verb     API Name  URL
 /user@host.com_dev/hello     get  hello-world  https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/<UUID>/api/hello
@@ -602,7 +609,7 @@ In this exercise, you are going to create HTTP endpoints for the backend of a To
 
 #### Resources
 
-IBM Cloud provides a free instance of the [Cloudant database](https://console.bluemix.net/catalog/services/cloudant) to Lite account users.
+IBM Cloud provides a free instance of the [Cloudant database](https://cloud.ibm.com/catalog/services/cloudant) to Lite account users.
 
 [Path parameters](https://github.com/apache/incubator-openwhisk/blob/master/docs/apigateway.md#exposing-multiple-web-actions) can be used to bind actions to HTTP endpoints with templated URLs.
 

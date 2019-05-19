@@ -35,33 +35,34 @@ IBM Cloud Functions comes pre-installed with a number of public packages, which 
 
 Actions in public packages can be used by anyone, the caller pays the invocation cost.
 
-Using `ibmcloud wsk` CLI you can get a list of packages in a namespace, list the entities in a package and get a description of the entities within a package.
+Using `ibmcloud fn` CLI you can get a list of packages in a namespace, list the entities in a package and get a description of the entities within a package.
 
 1. Get a list of packages in the `/whisk.system` namespace.
 
 ```
-$ ibmcloud wsk package list /whisk.system
+$ ibmcloud fn package list /whisk.system
 packages
-/whisk.system/combinators                                              shared
+/whisk.system/weather                                                  shared
+/whisk.system/samples                                                  shared
+/whisk.system/slack                                                    shared
+/whisk.system/utils                                                    shared
 /whisk.system/websocket                                                shared
-/whisk.system/watson-translator                                        shared
+/whisk.system/cloudant                                                 shared
+/whisk.system/cos-experimental                                         shared
+/whisk.system/alarms                                                   shared
+/whisk.system/messaging                                                shared
+/whisk.system/pushnotifications                                        shared
 /whisk.system/watson-textToSpeech                                      shared
 /whisk.system/github                                                   shared
-/whisk.system/utils                                                    shared
+/whisk.system/combinators                                              shared
 /whisk.system/watson-speechToText                                      shared
-/whisk.system/slack                                                    shared
-/whisk.system/samples                                                  shared
-/whisk.system/weather                                                  shared
-/whisk.system/pushnotifications                                        shared
-/whisk.system/alarms                                                   shared
-/whisk.system/cloudant                                                 shared
-/whisk.system/messaging                                                shared
+/whisk.system/watson-translator                                        shared
 ```
 
 2. Get a list of entities in the `/whisk.system/cloudant` package.
 
 ```
-$ ibmcloud wsk package get --summary /whisk.system/cloudant
+$ ibmcloud fn package get --summary /whisk.system/cloudant
 package /whisk.system/cloudant: Cloudant database service
    (parameters: *apihost, *bluemixServiceName, *dbname, *host, overwrite, *password, *username)
  action /whisk.system/cloudant/read: Read document from database
@@ -82,9 +83,9 @@ The Cloudant package also defines the parameters `username`, `password`, `host`,
 3. Get a description of the `/whisk.system/cloudant/read` action.
 
 ```
-$ ibmcloud wsk action get --summary /whisk.system/cloudant/read
+$ ibmcloud fn action get --summary /whisk.system/cloudant/read
 action /whisk.system/cloudant/read: Read document from database
-   (parameters: *apihost, *bluemixServiceName, *dbname, *host, *id, params, *password, *username)
+   (parameters: *apihost, *bluemixServiceName, dbname, *id, params)
 ```
 
 This output shows that the Cloudant `read` action lists eight parameters, seven of which are predefined. These include the database and document ID to retrieve.
@@ -96,7 +97,7 @@ You can invoke actions in a package, just as with other actions. The next few st
 1. Get a description of the `/whisk.system/samples/greeting` action.
 
 ```
-$ ibmcloud wsk action get --summary /whisk.system/samples/greeting
+$ ibmcloud fn action get --summary /whisk.system/samples/greeting
 action /whisk.system/samples/greeting: Returns a friendly greeting
    (parameters: name, place)
 ```
@@ -106,7 +107,7 @@ Notice that the `greeting` action takes two parameters: `name` and `place`.
 2. Invoke the action without any parameters.
 
 ```
-$ ibmcloud wsk action invoke --result /whisk.system/samples/greeting
+$ ibmcloud fn action invoke --result /whisk.system/samples/greeting
 {
     "payload": "Hello, stranger from somewhere!"
 }
@@ -117,9 +118,9 @@ The output is a generic message because no parameters were specified.
 3. Invoke the action with parameters.
 
 ```
-$ ibmcloud wsk action invoke --result /whisk.system/samples/greeting --param name Bernie --param place Vermont
+$ ibmcloud fn action invoke --result /whisk.system/samples/greeting --param name Friends --param place NY
 {
-    "payload": "Hello, Bernie from Vermont!"
+    "payload": "Hello, Friends from NY!"
 }
 ```
 
@@ -136,14 +137,14 @@ In the following simple example, you bind to the `/whisk.system/samples` package
 1. Bind to the `/whisk.system/samples` package and set a default `place` parameter value.
 
 ```
-$ ibmcloud wsk package bind /whisk.system/samples valhallaSamples --param place Valhalla
+$ ibmcloud fn package bind /whisk.system/samples valhallaSamples --param place Valhalla
 ok: created binding valhallaSamples
 ```
 
 2. Get a description of the package binding.
 
 ```
-$ ibmcloud wsk package get --summary valhallaSamples
+$ ibmcloud fn package get --summary valhallaSamples
 package /namespace/valhallaSamples: Returns a result based on parameter place
    (parameters: *place)
  action /namespace/valhallaSamples/helloWorld: Demonstrates logging facilities
@@ -161,7 +162,7 @@ Notice that all the actions in the `/whisk.system/samples` package are available
 3. Invoke an action in the package binding.
 
 ```
-$ ibmcloud wsk action invoke --result valhallaSamples/greeting --param name Odin
+$ ibmcloud fn action invoke --result valhallaSamples/greeting --param name Odin
 {
     "payload": "Hello, Odin from Valhalla!"
 }
@@ -172,7 +173,7 @@ Notice from the result that the action inherits the `place` parameter you set wh
 4. Invoke an action and overwrite the default parameter value.
 
 ```
-$ ibmcloud wsk action invoke --result valhallaSamples/greeting --param name Odin --param place Asgard
+$ ibmcloud fn action invoke --result valhallaSamples/greeting --param name Odin --param place Asgard
 {
     "payload": "Hello, Odin from Asgard!"
 }
@@ -189,14 +190,14 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
 1. Create a package called "custom".
 
   ```
-  $ ibmcloud wsk package create custom
+  $ ibmcloud fn package create custom
   ok: created package custom
   ```
 
 2. Get a summary of the package.
 
   ```
-  $ ibmcloud wsk package get --summary custom
+  $ ibmcloud fn package get --summary custom
   package /myNamespace/custom
      (parameters: none defined)
   ```
@@ -211,7 +212,7 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
 4. Create an `identity` action in the `custom` package.
 
   ```
-  $ ibmcloud wsk action create custom/identity identity.js
+  $ ibmcloud fn action create custom/identity identity.js
   ok: created action custom/identity
   ```
   Creating an action in a package requires that you prefix the action name with a package name.
@@ -219,7 +220,7 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
 5. Get a summary of the package again.
 
   ```
-  $ ibmcloud wsk package get --summary custom
+  $ ibmcloud fn package get --summary custom
   ```
   ```
   package /myNamespace/custom
@@ -233,7 +234,7 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
 6. Invoke the action in the package.
 
   ```
-  $ ibmcloud wsk action invoke --result custom/identity
+  $ ibmcloud fn action invoke --result custom/identity
   {}
   ```
 
@@ -243,14 +244,14 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
 1. Update the `custom` package with two parameters: `city` and `country`.
 
   ```
-  $ ibmcloud wsk package update custom --param city Austin --param country USA
+  $ ibmcloud fn package update custom --param city Austin --param country USA
   ok: updated package custom
   ```
 
 2. Display the parameters in the package and action, and see how the `identity` action in the package inherits parameters from the package.
 
   ```
-  $ ibmcloud wsk package get custom
+  $ ibmcloud fn package get custom
   ok: got package custom
   ...
   "parameters": [
@@ -267,7 +268,7 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
   ```
 
   ```
-  $ ibmcloud wsk action get custom/identity
+  $ ibmcloud fn action get custom/identity
   ok: got action custom/identity
   ...
   "parameters": [
@@ -286,7 +287,7 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
 3. Invoke the identity action without any parameters to verify that the action indeed inherits the parameters.
 
   ```
-  $ ibmcloud wsk action invoke --result custom/identity
+  $ ibmcloud fn action invoke --result custom/identity
   ```
   ```
   {
@@ -298,7 +299,7 @@ Let's demonstrate how to do this now using the `bx wsk` CLI tool…
 4. Invoke the identity action with some parameters. Invocation parameters are merged with the package parameters; the invocation parameters override the package parameters.
 
   ```
-  $ ibmcloud wsk action invoke --result custom/identity --param city Dallas --param state Texas
+  $ ibmcloud fn action invoke --result custom/identity --param city Dallas --param state Texas
   ```
   ```
   {
@@ -316,14 +317,14 @@ After the actions and feeds that comprise a package are debugged and tested, the
 1. Share the package with all users:
 
   ```
-  $ ibmcloud wsk package update custom --shared yes
+  $ ibmcloud fn package update custom --shared yes
   ok: updated package custom
   ```
 
 2. Display the `publish` property of the package to verify that it is now true.
 
   ```
-  $ ibmcloud wsk package get custom
+  $ ibmcloud fn package get custom
   ok: got package custom
   ...
   "publish": true,
@@ -336,7 +337,7 @@ Others can now use your `custom` package, including binding to the package or di
 1. Get a description of the package to show the fully qualified names of the package and action.
 
   ```
-  $ ibmcloud wsk package get --summary custom
+  $ ibmcloud fn package get --summary custom
   ```
   ```
   package /myNamespace/custom: Returns a result based on parameters city and country
